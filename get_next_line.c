@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUFFER_SIZE 9999
-#include <string.h>
+#define BUFFER_SIZE 32
 
 void	ft_save(char *s, char *save)
 {
@@ -41,11 +40,8 @@ int		read_line(int fd, char **gnl, char *save)
 	char	buf[BUFFER_SIZE + 1];
 	int		i;
 
-	tmp = *gnl;
-	*gnl = ft_strjoin(*gnl, save);
-	free(tmp);
-	ret = 1;
 	i = 0;
+	ret = 1;
 	while (!(ft_strchr(*gnl, '\n')) && ret)
 	{
 		ret = read(fd, buf, BUFFER_SIZE);
@@ -58,37 +54,40 @@ int		read_line(int fd, char **gnl, char *save)
 			i = 1;
 		}
 	}
-	//printf("		gnl = %s\n", *gnl);
-	//printf("		sav = %s\n", save);
 	ft_save(*gnl, save);
-	printf("		gnl = %s\n", *gnl);
-	printf("		sav = %s\n", save);
+	if (ret == 0)
+		save[0] = '\0';
 	if (i == 1)
 		return (1);
 	return (0);
 }
 
-int	get_next_line(int fd, char **line)
+int		get_next_line(int fd, char **line)
 {
-	char *gnl;
-	char *tmp;
-	int ret;
-	static char save[BUFFER_SIZE + 1];
+	char		*gnl;
+	char		*tmp;
+	int			ret;
+	static char	save[BUFFER_SIZE + 1];
+	int			i;
 
-	//printf("save = %s\n", save);
+	if (fd == -1 || BUFFER_SIZE < 1)
+		return (-1);
+	i = 0;
 	if (!(gnl = ft_strnew((BUFFER_SIZE + 1) * sizeof(char))))
 		return (-1);
+	tmp = gnl;
+	if (ft_strlen(save) > 0)
+		i = 1;
+	gnl = ft_strjoin(gnl, save);
+	free(tmp);
 	ret = read_line(fd, &gnl, save);
 	*line = gnl;
-	printf("		ret = %d\n", ret);
-	//printf("		%s\n", gnl);
-	//printf("		%s\n", save);
-	if (ret > 0)
+	if (ret > 0 || i == 1)
 		return (1);
 	return (0);
 }
 
-int	main(void)
+int		main(void)
 {
 	int		fd;
 	char	*line;

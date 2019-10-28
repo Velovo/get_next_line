@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-void	ft_save(char *s, char *save)
+static void	ft_save(char *s, char *save)
 {
 	int i;
 	int j;
@@ -34,7 +34,7 @@ void	ft_save(char *s, char *save)
 	save[j] = '\0';
 }
 
-int		read_line(int fd, char **gnl, char *save, int ret)
+static int	read_line(int fd, char **gnl, char *save, int ret)
 {
 	char	*tmp;
 	char	buf[BUFFER_SIZE + 1];
@@ -58,7 +58,7 @@ int		read_line(int fd, char **gnl, char *save, int ret)
 	return (0);
 }
 
-int		get_next_line(int fd, char **line)
+int			get_next_line(int fd, char **line)
 {
 	char		*gnl;
 	char		*tmp;
